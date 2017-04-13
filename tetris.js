@@ -134,17 +134,30 @@
                     if (this.tablero[k].x == piezas_activas[j].x && this.tablero[k].y == piezas_activas[j].y) {
                         this.tablero[k+this.width].id = piezas_activas[j].id
                         this.tablero[k+this.width].active = true
-                    }
+                    } 
+                }
+            }
+
+            var n = 0
+            for (let h = 0; h < this.tablero.length; h++) {
+                let v = this.tablero[h]
+                if ((v.active && v.y === this.height-1) || (v.active && !this.tablero[h+this.width].active && this.tablero[h+this.width].id)) n++
+            }
+            if (n) this.unable()
+        }
+
+        unable() {
+            for (let c of this.tablero) {
+                if (c.active) {
+                    c.active = false
+                    this.current_piece = undefined
                 }
             }
         }
 
-        unable() {
-            console.log("--..---.-.-..-");
-        }
-
         lose() {
             console.log("Perdiste!");
+            this.paused = true
         }
 
         dibujar(dibujo) {
