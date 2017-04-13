@@ -39,10 +39,46 @@
         
         mover_der() {
             console.log("Derecha")
+            var piezas_activas = []
+            for (let i = 0; i < this.tablero.length; i++) {
+                if (this.tablero[i].active) {
+                    piezas_activas.push({x: this.tablero[i].x, y: this.tablero[i].y, id: this.tablero[i].id, active: this.tablero[i].active})
+                    this.tablero[i].id = 0
+                    this.tablero[i].active = false
+                }
+            }
+
+            // Movamoslas
+            for (let j = 0; j < piezas_activas.length; j++) {
+                for (let k = 0; k < this.tablero.length; k++) {
+                    if (this.tablero[k].x == piezas_activas[j].x && this.tablero[k].y == piezas_activas[j].y) {
+                        this.tablero[k+1].id = piezas_activas[j].id
+                        this.tablero[k+1].active = true
+                    } 
+                }
+            }
         }
 
         mover_izq() {
             console.log("Izquierda")
+            var piezas_activas = []
+            for (let i = 0; i < this.tablero.length; i++) {
+                if (this.tablero[i].active) {
+                    piezas_activas.push({x: this.tablero[i].x, y: this.tablero[i].y, id: this.tablero[i].id, active: this.tablero[i].active})
+                    this.tablero[i].id = 0
+                    this.tablero[i].active = false
+                }
+            }
+
+            // Movamoslas
+            for (let j = 0; j < piezas_activas.length; j++) {
+                for (let k = 0; k < this.tablero.length; k++) {
+                    if (this.tablero[k].x == piezas_activas[j].x && this.tablero[k].y == piezas_activas[j].y) {
+                        this.tablero[k-1].id = piezas_activas[j].id
+                        this.tablero[k-1].active = true
+                    } 
+                }
+            }
         }
 
         crearTablero(width, height, side) {
@@ -91,7 +127,7 @@
                     this.dibujar(dibujo)
                     if (this.current_piece) this.fall()
                 }
-            }, 500)
+            }, 1000)
         }
 
         // Selecciona una pieza al azar
@@ -141,7 +177,7 @@
                 let v = this.tablero[h]
                 if ((v.active && v.y === this.height-1) || (v.active && !this.tablero[h+this.width].active && this.tablero[h+this.width].id)) n++
             }
-            
+
             if (n) {
                 // Si no se puede mover, se bloquea
                 this.unable()
