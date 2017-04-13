@@ -18,15 +18,31 @@
         init() {
             this.crearTablero(this.width, this.height, this.side)
             this.grid()
-            this.togglePlayPause()
+            this.teclas()
             this.mover(this.dibujo)
         }
 
-        // Pausar el juego
-        togglePlayPause() {
+        // Detecta las teclas
+        teclas() {
             document.addEventListener("keydown", (e) => {
+                // Pausa el juego
                 if (e.keyCode == 32) this.paused = (this.paused == false)
+
+                // Mueve las piezas
+                if (!this.paused) {
+                    if (e.keyCode == 39) this.mover_der()
+                    else if (e.keyCode == 37) this.mover_izq()
+                }
             })
+        }
+
+        
+        mover_der() {
+            console.log("Derecha")
+        }
+
+        mover_izq() {
+            console.log("Izquierda")
         }
 
         crearTablero(width, height, side) {
@@ -118,34 +134,41 @@
 
         // Hace caer las piezas
         fall() {
-            // Retengamos las piezas activas
-            var piezas_activas = []
-            for (let i = 0; i < this.tablero.length; i++) {
-                if (this.tablero[i].active) {
-                    piezas_activas.push({x: this.tablero[i].x, y: this.tablero[i].y, id: this.tablero[i].id, active: this.tablero[i].active})
-                    this.tablero[i].id = 0
-                    this.tablero[i].active = false
-                }
-            }
 
-            // Movamoslas
-            for (let j = 0; j < piezas_activas.length; j++) {
-                for (let k = 0; k < this.tablero.length; k++) {
-                    if (this.tablero[k].x == piezas_activas[j].x && this.tablero[k].y == piezas_activas[j].y) {
-                        this.tablero[k+this.width].id = piezas_activas[j].id
-                        this.tablero[k+this.width].active = true
-                    } 
-                }
-            }
-
+            // Revisa si se puede seguir moviendo la pieza
             var n = 0
             for (let h = 0; h < this.tablero.length; h++) {
                 let v = this.tablero[h]
                 if ((v.active && v.y === this.height-1) || (v.active && !this.tablero[h+this.width].active && this.tablero[h+this.width].id)) n++
             }
-            if (n) this.unable()
+            
+            if (n) {
+                // Si no se puede mover, se bloquea
+                this.unable()
+            } else {
+                // Retengamos las piezas activas
+                var piezas_activas = []
+                for (let i = 0; i < this.tablero.length; i++) {
+                    if (this.tablero[i].active) {
+                        piezas_activas.push({x: this.tablero[i].x, y: this.tablero[i].y, id: this.tablero[i].id, active: this.tablero[i].active})
+                        this.tablero[i].id = 0
+                        this.tablero[i].active = false
+                    }
+                }
+
+                // Movamoslas
+                for (let j = 0; j < piezas_activas.length; j++) {
+                    for (let k = 0; k < this.tablero.length; k++) {
+                        if (this.tablero[k].x == piezas_activas[j].x && this.tablero[k].y == piezas_activas[j].y) {
+                            this.tablero[k+this.width].id = piezas_activas[j].id
+                            this.tablero[k+this.width].active = true
+                        } 
+                    }
+                }
+            }
         }
 
+        // Bloquea las piezas activas para que se pueda crear una nueva
         unable() {
             for (let c of this.tablero) {
                 if (c.active) {
@@ -156,7 +179,7 @@
         }
 
         lose() {
-            console.log("Perdiste!");
+            alert("Perdiste!");
             this.paused = true
         }
 
