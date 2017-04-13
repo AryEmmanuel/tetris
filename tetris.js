@@ -22,6 +22,7 @@
             this.mover(this.dibujo)
         }
 
+        // Pausar el juego
         togglePlayPause() {
             document.addEventListener("keydown", (e) => {
                 if (e.keyCode == 32) this.paused = (this.paused == false)
@@ -66,6 +67,7 @@
             }
         }
 
+        // Mueve el juego (si no esta pausado)
         mover(dibujo) {
             setInterval(() => {
                 if (!this.paused) {
@@ -76,28 +78,30 @@
             }, 500)
         }
 
+        // Selecciona una pieza al azar
         select_piece() {
             if (!this.current_piece) {
                 this.current_piece = new this.pieces[Math.floor(Math.random() * this.pieces.length)](this.side, this.width, 0)
-                this.find_pos() ? this.show_piece() : this.lose()
+                find_pos(this) ? this.show_piece() : this.lose()
             }
-        }
 
-        find_pos() {
-            var pieza = this.current_piece
-            var height = pieza.first_height
-            var m = height * this.width
-            var n = 0
+            function find_pos(tetris) {
+                var pieza = tetris.current_piece
+                var height = pieza.first_height
+                var m = height * tetris.width
+                var n = 0
 
-            for (let i = 0; i < pieza.pos[0].length; i++) {
-                for (let j = 0; j < m-1; j++) {
-                    let cas = this.tablero[j]
-                    if (cas.x == this.current_piece.pos[0][i].x && cas.id) n++
+                for (let i = 0; i < pieza.pos[0].length; i++) {
+                    for (let j = 0; j < m-1; j++) {
+                        let cas = tetris.tablero[j]
+                        if (cas.x == tetris.current_piece.pos[0][i].x && cas.id) n++
+                    }
                 }
+                return n == 0
             }
-            return n == 0
         }
 
+        // Coloca la pieza seleccionada en el tablero
         show_piece() {
             var pieza = this.current_piece
             var m = pieza.first_height * this.width
@@ -112,8 +116,27 @@
             }
         }
 
+        // Hace caer las piezas
         fall() {
-            
+            // Retengamos las piezas activas
+            var piezas_activas = []
+            for (let i = 0; i < this.tablero.length; i++) {
+                if (this.tablero[i].active) {
+                    piezas_activas.push({x: this.tablero[i].x, y: this.tablero[i].y, id: this.tablero[i].id, active: this.tablero[i].active})
+                    this.tablero[i].id = 0
+                    this.tablero[i].active = false
+                }
+            }
+
+            // Movamoslas
+            for (let j = 0; j < piezas_activas.length; j++) {
+                for (let k = 0; k < this.tablero.length; k++) {
+                    if (this.tablero[k].x == piezas_activas[j].x && this.tablero[k].y == piezas_activas[j].y) {
+                        this.tablero[k+this.width].id = piezas_activas[j].id
+                        this.tablero[k+this.width].active = true
+                    }
+                }
+            }
         }
 
         unable() {
