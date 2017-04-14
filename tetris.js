@@ -50,28 +50,44 @@
         
         mover_der() {
             console.log("Derecha")
-            var piezas_activas = this.obtPiezasActivas()
-            // Movamoslas
-            for (let j = 0; j < piezas_activas.length; j++) {
-                for (let k = 0; k < this.tablero.length; k++) {
-                    if (this.tablero[k].x == piezas_activas[j].x && this.tablero[k].y == piezas_activas[j].y) {
-                        this.tablero[k+1].id = piezas_activas[j].id
-                        this.tablero[k+1].active = true
-                    } 
+            var n = 0
+            for (let c = 0; c < this.tablero.length; c++) {
+                if ((this.tablero[c].active && this.tablero[c].x === this.width-1) || (this.tablero[c].active && this.tablero[c+1].id && !this.tablero[c+1].active)) n++
+            }
+            
+            if (!n)
+            {
+                var piezas_activas = this.obtPiezasActivas()
+                // Movamoslas
+                for (let j = 0; j < piezas_activas.length; j++) {
+                    for (let k = 0; k < this.tablero.length; k++) {
+                        if (this.tablero[k].x == piezas_activas[j].x && this.tablero[k].y == piezas_activas[j].y) {
+                            this.tablero[k+1].id = piezas_activas[j].id
+                            this.tablero[k+1].active = true
+                        } 
+                    }
                 }
             }
         }
 
         mover_izq() {
             console.log("Izquierda")
-            var piezas_activas = this.obtPiezasActivas()
-            // Movamoslas
-            for (let j = 0; j < piezas_activas.length; j++) {
-                for (let k = 0; k < this.tablero.length; k++) {
-                    if (this.tablero[k].x == piezas_activas[j].x && this.tablero[k].y == piezas_activas[j].y) {
-                        this.tablero[k-1].id = piezas_activas[j].id
-                        this.tablero[k-1].active = true
-                    } 
+            var n = 0
+            for (let c = 0; c < this.tablero.length; c++) {
+                if ((this.tablero[c].active && this.tablero[c].x === 0) || (this.tablero[c].active && this.tablero[c-1].id && !this.tablero[c-1].active)) n++
+            }
+
+            if (!n)
+            {
+                var piezas_activas = this.obtPiezasActivas()
+                // Movamoslas
+                for (let j = 0; j < piezas_activas.length; j++) {
+                    for (let k = 0; k < this.tablero.length; k++) {
+                        if (this.tablero[k].x == piezas_activas[j].x && this.tablero[k].y == piezas_activas[j].y) {
+                            this.tablero[k-1].id = piezas_activas[j].id
+                            this.tablero[k-1].active = true
+                        } 
+                    }
                 }
             }
         }
@@ -236,13 +252,15 @@
 
             for (let i = this.width; i < this.tablero.length; i++) {
                 let casilla = this.tablero[i]
-                dibujo.beginPath()
-                dibujo.fillStyle = colors[casilla.id]
-                dibujo.fillRect(casilla.x * this.side, (casilla.y-1) * this.side, this.side, this.side)
-                dibujo.fill()
-                dibujo.closePath()
+                if (casilla.id) {
+                    dibujo.beginPath()
+                    dibujo.fillStyle = colors[casilla.id]
+                    dibujo.fillRect(casilla.x * this.side, (casilla.y-1) * this.side, this.side, this.side)
+                    // dibujo.arc(casilla.x * this.side + this.side/2, (casilla.y-1) * this.side + this.side/2, this.side/2, 0, Math.PI*2)
+                    dibujo.fill()
+                    dibujo.closePath()
+                }
             }
-
             this.grid()
         }
     }
