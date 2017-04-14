@@ -2,7 +2,7 @@
     class Tetris {
         constructor(width, height, side, canvas) {
             this.width = width
-            this.height = height
+            this.height = height + 1
             this.side = side
             this.canvas = canvas
             this.dibujo = this.canvas.getContext("2d")
@@ -30,15 +30,13 @@
 
                 // Mueve las piezas
                 if (!this.paused) {
-                    if (e.keyCode == 39) this.mover_der()
-                    else if (e.keyCode == 37) this.mover_izq()
+                    if (e.keyCode == 39 || e.keyCode == 68) this.mover_der()
+                    else if (e.keyCode == 37 || e.keyCode == 65) this.mover_izq()
                 }
             })
         }
 
-        
-        mover_der() {
-            console.log("Derecha")
+        obtPiezasActivas() {
             var piezas_activas = []
             for (let i = 0; i < this.tablero.length; i++) {
                 if (this.tablero[i].active) {
@@ -47,7 +45,12 @@
                     this.tablero[i].active = false
                 }
             }
-
+            return piezas_activas
+        }
+        
+        mover_der() {
+            console.log("Derecha")
+            var piezas_activas = this.obtPiezasActivas()
             // Movamoslas
             for (let j = 0; j < piezas_activas.length; j++) {
                 for (let k = 0; k < this.tablero.length; k++) {
@@ -61,15 +64,7 @@
 
         mover_izq() {
             console.log("Izquierda")
-            var piezas_activas = []
-            for (let i = 0; i < this.tablero.length; i++) {
-                if (this.tablero[i].active) {
-                    piezas_activas.push({x: this.tablero[i].x, y: this.tablero[i].y, id: this.tablero[i].id, active: this.tablero[i].active})
-                    this.tablero[i].id = 0
-                    this.tablero[i].active = false
-                }
-            }
-
+            var piezas_activas = this.obtPiezasActivas()
             // Movamoslas
             for (let j = 0; j < piezas_activas.length; j++) {
                 for (let k = 0; k < this.tablero.length; k++) {
@@ -83,7 +78,7 @@
 
         crearTablero(width, height, side) {
             this.canvas.width = width * side
-            this.canvas.height = height * side
+            this.canvas.height = (height-1) * side
 
             this.tablero = new Array(this.width * this.height)
 
@@ -127,7 +122,7 @@
                     this.dibujar(dibujo)
                     if (this.current_piece) this.fall()
                 }
-            }, 1000)
+            }, 700)
         }
 
         // Selecciona una pieza al azar
@@ -170,7 +165,6 @@
 
         // Hace caer las piezas
         fall() {
-
             // Revisa si se puede seguir moviendo la pieza
             var n = 0
             for (let h = 0; h < this.tablero.length; h++) {
@@ -183,15 +177,7 @@
                 this.unable()
             } else {
                 // Retengamos las piezas activas
-                var piezas_activas = []
-                for (let i = 0; i < this.tablero.length; i++) {
-                    if (this.tablero[i].active) {
-                        piezas_activas.push({x: this.tablero[i].x, y: this.tablero[i].y, id: this.tablero[i].id, active: this.tablero[i].active})
-                        this.tablero[i].id = 0
-                        this.tablero[i].active = false
-                    }
-                }
-
+                var piezas_activas = this.obtPiezasActivas()
                 // Movamoslas
                 for (let j = 0; j < piezas_activas.length; j++) {
                     for (let k = 0; k < this.tablero.length; k++) {
@@ -212,6 +198,30 @@
                     this.current_piece = undefined
                 }
             }
+            this.reducir()
+        }
+
+        // Busca y elimina las filas completadas
+        reducir() {
+            // Encuentra las filas completas
+            for (var i = 0; i<this.tablero.length; i+=this.width) {
+                var n = 0
+                for (var j = i; j < i+this.width; j++) {
+                    if (this.tablero[j].y == i/this.width && this.tablero[j].id) n++
+                }
+                if (n == this.width) borrar(i/this.width, this)
+            }
+
+            // Elimina las filas completadas del tablero
+            function borrar(y, tetris) {
+                for (let c of tetris.tablero) {
+                    if (c.y == y && c.id) c.id = 0
+                }
+                for (let i = tetris.width * y - 1; i >= 0; i--) {
+                    tetris.tablero[i+tetris.width].id = tetris.tablero[i].id
+                    tetris.tablero[i].id = 0
+                }
+            }
         }
 
         lose() {
@@ -224,11 +234,11 @@
 
             var colors = this.colors
 
-            for (let i = 0; i < this.tablero.length; i++) {
+            for (let i = this.width; i < this.tablero.length; i++) {
                 let casilla = this.tablero[i]
                 dibujo.beginPath()
                 dibujo.fillStyle = colors[casilla.id]
-                dibujo.fillRect(casilla.x * this.side, casilla.y * this.side, this.side, this.side)
+                dibujo.fillRect(casilla.x * this.side, (casilla.y-1) * this.side, this.side, this.side)
                 dibujo.fill()
                 dibujo.closePath()
             }
