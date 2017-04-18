@@ -13,11 +13,12 @@
             this.tablero = []
             this.current_piece
             this.activeCs = []
+            this.interval = 55
+            this.score = 0
         }
 
         init() {
             this.crearTablero(this.width, this.height, this.side)
-            this.grid()
             this.teclas()
             this.mover(this.dibujo)
         }
@@ -32,8 +33,112 @@
                 if (!this.paused) {
                     if (e.keyCode == 39 || e.keyCode == 68) this.mover_der()
                     else if (e.keyCode == 37 || e.keyCode == 65) this.mover_izq()
+                    else if (e.keyCode == 38 || e.keyCode == 87) this.rotate()
                 }
             })
+        }
+
+        crearTablero(width, height, side) {
+            this.canvas.width = width * side
+            this.canvas.height = (height-1) * side
+
+            this.tablero = new Array(this.width * this.height)
+
+            for (let i = 0; i < this.tablero.length; i++) {
+                this.tablero[i] = {x:0,y:0,id:0,active:false}
+            }
+
+            // Coloca las 'x' y 'y' en cada casilla del tablero
+            for (let i = 0; i < this.height; i++) {
+                for (let j = 0; j < this.width; j++) {
+                    this.tablero[i*this.width+j].x = j // X
+                    this.tablero[i*this.width+j].y = i // Y
+                }
+            }
+        }
+
+        grid() {
+            let dibujo = this.dibujo
+            for (var i = 0; i <= this.canvas.height; i += this.side) {
+                dibujo.beginPath()
+                dibujo.moveTo(0, i)
+                dibujo.lineTo(this.canvas.width, i)
+                dibujo.stroke()
+                dibujo.closePath()
+                //console.log(i)
+            }
+            for (var i = 0; i <= this.canvas.width; i += this.side) {
+                dibujo.beginPath()
+                dibujo.moveTo(i, 0)
+                dibujo.lineTo(i, this.canvas.height)
+                dibujo.stroke()
+                dibujo.closePath()
+            }
+        }
+
+        // Mueve el juego (si no esta pausado)
+        mover(dibujo) {
+            var tetris = this
+            var starttime
+            var duration = 0
+
+            function move(timestamp) {
+                var runtime = timestamp-starttime
+                duration++
+
+                if (duration == tetris.interval && !tetris.paused) {
+                    tetris.select_piece()
+                    tetris.dibujar(dibujo)
+                    console.log(duration)
+                    if (tetris.current_piece) tetris.fall()
+                    starttime = timestamp
+                    duration = 0
+                }
+                requestAnimationFrame(move)
+            }
+
+            requestAnimationFrame(function(timestamp) {
+                starttime = timestamp
+                move(timestamp)
+            })
+        }
+
+        // Selecciona una pieza al azar
+        select_piece() {
+            if (!this.current_piece) {
+                this.current_piece = new this.pieces[Math.floor(Math.random() * this.pieces.length)](this.side, this.width, 0)
+                find_pos(this) ? this.show_piece() : this.lose()
+            }
+
+            function find_pos(tetris) {
+                var pieza = tetris.current_piece
+                var height = pieza.first_height
+                var m = height * tetris.width
+                var n = 0
+
+                for (let i = 0; i < pieza.pos[0].length; i++) {
+                    for (let j = 0; j < m-1; j++) {
+                        let cas = tetris.tablero[j]
+                        if (cas.x == tetris.current_piece.pos[0][i].x && cas.id) n++
+                    }
+                }
+                return n == 0
+            }
+        }
+
+        // Coloca la pieza seleccionada en el tablero
+        show_piece() {
+            var pieza = this.current_piece
+            var m = pieza.first_height * this.width
+
+            for (let i = 0; i < pieza.pos[0].length; i++) {
+                for (let j = 0; j < m-1; j++) {
+                    if (this.tablero[j].x == pieza.pos[0][i].x && this.tablero[j].y == pieza.pos[0][i].y) {
+                        this.tablero[j] = pieza.pos[0][i]
+                        this.activeCs.push(this.tablero[j])
+                    }
+                }
+            }
         }
 
         obtPiezasActivas() {
@@ -92,91 +197,8 @@
             }
         }
 
-        crearTablero(width, height, side) {
-            this.canvas.width = width * side
-            this.canvas.height = (height-1) * side
-
-            this.tablero = new Array(this.width * this.height)
-
-            for (let i = 0; i < this.tablero.length; i++) {
-                this.tablero[i] = {x:0,y:0,id:0,active:false}
-            }
-
-            // Coloca las 'x' y 'y' en cada casilla del tablero
-            for (let i = 0; i < this.height; i++) {
-                for (let j = 0; j < this.width; j++) {
-                    this.tablero[i*this.width+j].x = j // X
-                    this.tablero[i*this.width+j].y = i // Y
-                }
-            }
-        }
-
-        grid() {
-            let dibujo = this.dibujo
-            for (var i = 0; i <= this.canvas.height; i += this.side) {
-                dibujo.beginPath()
-                dibujo.moveTo(0, i)
-                dibujo.lineTo(this.canvas.width, i)
-                dibujo.stroke()
-                dibujo.closePath()
-                //console.log(i)
-            }
-            for (var i = 0; i <= this.canvas.width; i += this.side) {
-                dibujo.beginPath()
-                dibujo.moveTo(i, 0)
-                dibujo.lineTo(i, this.canvas.height)
-                dibujo.stroke()
-                dibujo.closePath()
-            }
-        }
-
-        // Mueve el juego (si no esta pausado)
-        mover(dibujo) {
-            setInterval(() => {
-                if (!this.paused) {
-                    this.select_piece()
-                    this.dibujar(dibujo)
-                    if (this.current_piece) this.fall()
-                }
-            }, 700)
-        }
-
-        // Selecciona una pieza al azar
-        select_piece() {
-            if (!this.current_piece) {
-                this.current_piece = new this.pieces[Math.floor(Math.random() * this.pieces.length)](this.side, this.width, 0)
-                find_pos(this) ? this.show_piece() : this.lose()
-            }
-
-            function find_pos(tetris) {
-                var pieza = tetris.current_piece
-                var height = pieza.first_height
-                var m = height * tetris.width
-                var n = 0
-
-                for (let i = 0; i < pieza.pos[0].length; i++) {
-                    for (let j = 0; j < m-1; j++) {
-                        let cas = tetris.tablero[j]
-                        if (cas.x == tetris.current_piece.pos[0][i].x && cas.id) n++
-                    }
-                }
-                return n == 0
-            }
-        }
-
-        // Coloca la pieza seleccionada en el tablero
-        show_piece() {
-            var pieza = this.current_piece
-            var m = pieza.first_height * this.width
-
-            for (let i = 0; i < pieza.pos[0].length; i++) {
-                for (let j = 0; j < m-1; j++) {
-                    if (this.tablero[j].x == pieza.pos[0][i].x && this.tablero[j].y == pieza.pos[0][i].y) {
-                        this.tablero[j] = pieza.pos[0][i]
-                        this.activeCs.push(this.tablero[j])
-                    }
-                }
-            }
+        rotate() {
+            console.log("Girar")
         }
 
         // Hace caer las piezas
@@ -237,17 +259,34 @@
                     tetris.tablero[i+tetris.width].id = tetris.tablero[i].id
                     tetris.tablero[i].id = 0
                 }
+                tetris.score += 250
+                tetris.checkScore()
+            }
+        }
+
+        checkScore() {
+            switch (this.score) {
+                case 500:
+                    this.interval = 50
+                    break
+                case 1000:
+                    this.interval = 45
+                    break
+                case 1250:
+                    this.interval = 40
+                    break
+                case 2000:
+                    this.interval = 30
             }
         }
 
         lose() {
-            alert("Perdiste!");
+            alert("Perdiste!")
             this.paused = true
         }
 
         dibujar(dibujo) {
             dibujo.clearRect(0,0,this.canvas.width, this.canvas.height)
-
             var colors = this.colors
 
             for (let i = this.width; i < this.tablero.length; i++) {
@@ -255,13 +294,15 @@
                 if (casilla.id) {
                     dibujo.beginPath()
                     dibujo.fillStyle = colors[casilla.id]
+                    dibujo.strokeStyle = "white"
                     dibujo.fillRect(casilla.x * this.side, (casilla.y-1) * this.side, this.side, this.side)
+                    dibujo.rect(casilla.x * this.side, (casilla.y-1) * this.side, this.side, this.side)
                     // dibujo.arc(casilla.x * this.side + this.side/2, (casilla.y-1) * this.side + this.side/2, this.side/2, 0, Math.PI*2)
                     dibujo.fill()
+                    dibujo.stroke()
                     dibujo.closePath()
                 }
             }
-            this.grid()
         }
     }
 

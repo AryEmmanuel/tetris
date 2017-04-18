@@ -3,7 +3,7 @@ class IPiece {
         this.side = side
         this.width = width
         this.initial_y = 0
-        this.color = "cyan"
+        this.color = "#64B5F6"
         this.id = 1
         this.first_height = 1
         this.inf = [[0,1,2,3], [0], [0,1,2,3], [0]]
@@ -30,7 +30,7 @@ class JPiece {
         this.side = side
         this.width = width
         this.initial_y = 1
-        this.color = "blue"
+        this.color = "#1976D2"
         this.id = 2
         this.first_height = 2
         this.inf = [[0,1,3], [2,3], 3, 2] // TODO Completar
@@ -55,7 +55,7 @@ class LPiece {
         this.side = side
         this.width = width
         this.initial_y = 1
-        this.color = "orange"
+        this.color = "#FF6D00"
         this.id = 3
         this.first_height = 2
         this.inf = [[1,2,3], 2, 3, 2] // TODO Completar
@@ -77,7 +77,7 @@ class OPiece {
         this.side = side
         this.width = width
         this.initial_y = 1
-        this.color = "yellow"
+        this.color = "#FFEA00"
         this.id = 4
         this.first_height = 2
         this.inf = [[2,3], 2, 2, 2] // TODO Completar
@@ -99,7 +99,7 @@ class SPiece {
         this.side = side
         this.width = width
         this.initial_y = 1
-        this.color = "red"
+        this.color = "#F44336"
         this.id = 5
         this.first_height = 2
         this.inf = [[1,2,3], 2, 2, 2] // TODO Completar
@@ -121,7 +121,7 @@ class TPiece {
         this.side = side
         this.width = width
         this.initial_y = 1
-        this.color = "magenta"
+        this.color = "#E91E63"
         this.id = 6
         this.pos = 1
         this.first_height = 2
@@ -144,7 +144,7 @@ class ZPiece {
         this.side = side
         this.width = width
         this.initial_y = 1
-        this.color = "greenyellow"
+        this.color = "#04BE24"
         this.id = 7
         this.first_height = 2
         this.inf = [[0,2,3], 2, 2, 2] // TODO Completar

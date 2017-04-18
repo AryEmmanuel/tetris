@@ -3,11 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css" media="screen" title="no title" charset="utf-8">
+    <link rel="stylesheet" href="flexboxgrid.min.css" media="screen" title="no title" charset="utf-8">
     <title>Tetris</title>
 </head>
 <body>
-    <canvas id="lienzo"></canvas>
-    <script src="pieces.js" charset="utf-8"></script>
-    <script src="tetris.js" charset="utf-8"></script>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-offset-2 col-xs-10">
+                <h1 style="text-align: center">TETRIS</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-offset-5 col-xs-7">
+                <canvas id="lienzo"></canvas>
+            </div>
+        </div>
+        <script src="pieces.js" charset="utf-8"></script>
+        <script src="tetris.js" charset="utf-8"></script>
+    </div>
 </body>
 </html>
