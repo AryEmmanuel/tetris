@@ -9,7 +9,7 @@
             this.paused = false
             this.over = false
             this.pieces = [IPiece, JPiece, LPiece, OPiece, SPiece, TPiece, ZPiece]
-            this.colors = {0: "white", 1: new IPiece().color, 2: new JPiece().color, 3: new LPiece().color, 4: new OPiece().color, 5: new SPiece().color, 6: new TPiece().color, 7: new ZPiece().color}
+            this.colors = {0: new IPiece().color, 1: new JPiece().color, 2: new LPiece().color, 3: new OPiece().color, 4: new SPiece().color, 5: new TPiece().color, 6: new ZPiece().color}
             this.tablero = []
             this.current_piece
             this.activeCs = []
@@ -28,7 +28,7 @@
             document.addEventListener("keydown", (e) => {
                 // Pausa el juego
                 if (e.keyCode == 32) this.paused = (this.paused == false)
-                title.innerText = this.paused ? "PAUSA" : "TETRIS"
+                if (!this.over) title.innerText = this.paused ? "PAUSA" : "TETRIS"
                 // Mueve las piezas
                 if (!this.paused) {
                     if (e.keyCode == 39 || e.keyCode == 68) this.mover_der()
@@ -84,7 +84,7 @@
             function move(timestamp) {
                 duration++
 
-                if (duration == tetris.interval && !tetris.paused) {
+                if (duration == tetris.interval && !tetris.paused && !tetris.over) {
                     tetris.select_piece()
                     tetris.dibujar(dibujo)
                     if (tetris.current_piece) tetris.fall()
@@ -149,7 +149,6 @@
         }
         
         mover_der() {
-            console.log("Derecha")
             var n = 0
             for (let c = 0; c < this.tablero.length; c++) {
                 if ((this.tablero[c].active && this.tablero[c].x === this.width-1) || (this.tablero[c].active && this.tablero[c+1].id && !this.tablero[c+1].active)) n++
@@ -171,7 +170,6 @@
         }
 
         mover_izq() {
-            console.log("Izquierda")
             var n = 0
             for (let c = 0; c < this.tablero.length; c++) {
                 if ((this.tablero[c].active && this.tablero[c].x === 0) || (this.tablero[c].active && this.tablero[c-1].id && !this.tablero[c-1].active)) n++
@@ -192,8 +190,8 @@
             }
         }
 
+        // Gira las piezas
         rotate() {
-            console.log("Girar")
             var arreglo = []
             var altura
             var arr_altura = []
@@ -251,17 +249,30 @@
                 }
             }
 
-            this.obtPiezasActivas()
-
+            var n = 0
             for (var i = 0; i < arreglo.length; i++) {
-                bucle : for (var j = arreglo[i].length-1; j >= 0; j--) { //yy
-                    var continuar = false
+                for (var j = arreglo[i].length-1; j >= 0; j--) {
                     for (var c = 0; c < this.tablero.length; c++) {
                         if (this.tablero[c].x == min_x && this.tablero[c].y == min_y) {
-                            if (arreglo[i][j]) {
-                                this.tablero[c+(arreglo[i].length - j-1) + this.width * i].active = true
-                                this.tablero[c+(arreglo[i].length - j-1) + this.width * i].id = arreglo[i][j].id
-                            } else continue bucle
+                            if (this.tablero[c+(arreglo[i].length - j-1) + this.width * i].id && !this.tablero[c+(arreglo[i].length - j-1) + this.width * i].active) n++
+                            if ((min_x + altura) > this.width) n++
+                        }
+                    }
+                }
+            }
+
+            if (!n) {
+                this.obtPiezasActivas()
+                for (var i = 0; i < arreglo.length; i++) {
+                    bucle : for (var j = arreglo[i].length-1; j >= 0; j--) {
+                        var continuar = false
+                        for (var c = 0; c < this.tablero.length; c++) {
+                            if (this.tablero[c].x == min_x && this.tablero[c].y == min_y) {
+                                if (arreglo[i][j]) {
+                                    this.tablero[c+(arreglo[i].length - j-1) + this.width * i].active = true
+                                    this.tablero[c+(arreglo[i].length - j-1) + this.width * i].id = arreglo[i][j].id
+                                } else continue bucle
+                            }
                         }
                     }
                 }
@@ -348,7 +359,8 @@
         }
 
         lose() {
-            alert("Perdiste!")
+            title.innerText = "Perdiste!"
+            this.over = true
             this.paused = true
         }
 
@@ -360,7 +372,7 @@
                 let casilla = this.tablero[i]
                 if (casilla.id) {
                     dibujo.beginPath()
-                    dibujo.fillStyle = colors[casilla.id]
+                    dibujo.fillStyle = colors[casilla.id-1]
                     dibujo.strokeStyle = "white"
                     dibujo.fillRect(casilla.x * this.side, (casilla.y-1) * this.side, this.side, this.side)
                     dibujo.rect(casilla.x * this.side, (casilla.y-1) * this.side, this.side, this.side)
