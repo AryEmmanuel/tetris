@@ -13,7 +13,7 @@
             this.tablero = []
             this.current_piece
             this.activeCs = []
-            this.interval = 55
+            this.interval = 50
             this.score = 0
         }
 
@@ -28,7 +28,7 @@
             document.addEventListener("keydown", (e) => {
                 // Pausa el juego
                 if (e.keyCode == 32) this.paused = (this.paused == false)
-
+                title.innerText = this.paused ? "PAUSA" : "TETRIS"
                 // Mueve las piezas
                 if (!this.paused) {
                     if (e.keyCode == 39 || e.keyCode == 68) this.mover_der()
@@ -79,26 +79,21 @@
         // Mueve el juego (si no esta pausado)
         mover(dibujo) {
             var tetris = this
-            var starttime
             var duration = 0
 
             function move(timestamp) {
-                var runtime = timestamp-starttime
                 duration++
 
                 if (duration == tetris.interval && !tetris.paused) {
                     tetris.select_piece()
                     tetris.dibujar(dibujo)
-                    console.log(duration)
                     if (tetris.current_piece) tetris.fall()
-                    starttime = timestamp
                     duration = 0
                 }
                 requestAnimationFrame(move)
             }
 
             requestAnimationFrame(function(timestamp) {
-                starttime = timestamp
                 move(timestamp)
             })
         }
@@ -199,6 +194,78 @@
 
         rotate() {
             console.log("Girar")
+            var arreglo = []
+            var altura
+            var arr_altura = []
+            var max_y
+            var min_y
+            var min_x
+            
+            for (var i = 0; i < this.width; i++) {
+                var n = 0
+                var p = []
+                for (var j = 0; j < this.tablero.length; j += this.width) {
+                    if (j+i < this.tablero.length){
+                        if (this.tablero[j+i].active) {
+                            p.push({x: this.tablero[j+i].x, y: this.tablero[j+i].y, id: this.tablero[j+i].id, active: this.tablero[j+i].active})
+                            n++
+                        }
+                    }
+                }
+                if (n) arreglo.push(p)
+            }
+
+            for (var c of arreglo) for (var d of c) arr_altura.push(d.y)
+            max_y = eval("Math.max(" + arr_altura.toString() + ")")
+            min_y = eval("Math.min(" + arr_altura.toString() + ")")
+            arr_altura = []
+
+            for (var c of arreglo) for (var d of c) arr_altura.push(d.x)
+            min_x = eval("Math.min(" + arr_altura.toString() + ")")
+            altura = max_y + 1 - min_y
+
+            for (var k = 0; k < arreglo.length; k++) {
+                for (var l = 0; l < arreglo[k].length; l++) {
+                    if (arreglo[k].length < altura) {
+                        let arriba = arreglo[k][l].y-min_y
+                        let abajo = max_y - arreglo[k][l].y
+                        var index = l
+
+                        if (arriba) {
+                            for (let i = 0; i < arriba; i++) {
+                                if (arreglo[k][l-1]) continue
+                                else {
+                                    arreglo[k].unshift(0)
+                                    index++
+                                }
+                            }
+                        }
+
+                        if (abajo) {
+                            for (let i = 0; i < abajo; i++) {
+                                 if (arreglo[k][index+1]) continue
+                                 else arreglo[k].push(0)
+                            }
+                        } 
+                    }
+                }
+            }
+
+            this.obtPiezasActivas()
+
+            for (var i = 0; i < arreglo.length; i++) {
+                bucle : for (var j = arreglo[i].length-1; j >= 0; j--) { //yy
+                    var continuar = false
+                    for (var c = 0; c < this.tablero.length; c++) {
+                        if (this.tablero[c].x == min_x && this.tablero[c].y == min_y) {
+                            if (arreglo[i][j]) {
+                                this.tablero[c+(arreglo[i].length - j-1) + this.width * i].active = true
+                                this.tablero[c+(arreglo[i].length - j-1) + this.width * i].id = arreglo[i][j].id
+                            } else continue bucle
+                        }
+                    }
+                }
+            }
         }
 
         // Hace caer las piezas
@@ -267,13 +334,13 @@
         checkScore() {
             switch (this.score) {
                 case 500:
-                    this.interval = 50
-                    break
-                case 1000:
                     this.interval = 45
                     break
-                case 1250:
+                case 1000:
                     this.interval = 40
+                    break
+                case 1250:
+                    this.interval = 35
                     break
                 case 2000:
                     this.interval = 30

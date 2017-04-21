@@ -6,8 +6,8 @@ class IPiece {
         this.color = "#64B5F6"
         this.id = 1
         this.first_height = 1
-        this.inf = [[0,1,2,3], [0], [0,1,2,3], [0]]
-        this.c_inf = this.inf[0]
+        this.n_rotations = 2
+        this.c_rotation = 0
 
         this.pos =
         [
