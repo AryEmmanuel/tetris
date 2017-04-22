@@ -14,6 +14,7 @@
             this.current_piece
             this.activeCs = []
             this.interval = 50
+            this.duration = 0
             this.score = 0
         }
 
@@ -27,7 +28,10 @@
         teclas() {
             document.addEventListener("keydown", (e) => {
                 // Pausa el juego
-                if (e.keyCode == 32) this.paused = (this.paused == false)
+                if (e.keyCode == 32) {
+                    this.paused = (this.paused == false)
+                    if (!this.paused) this.duration = 0
+                }
                 if (!this.over) title.innerText = this.paused ? "PAUSA" : "TETRIS"
                 // Mueve las piezas
                 if (!this.paused) {
@@ -79,16 +83,15 @@
         // Mueve el juego (si no esta pausado)
         mover(dibujo) {
             var tetris = this
-            var duration = 0
-
+            
             function move(timestamp) {
-                duration++
+                if (!tetris.paused) tetris.duration++
 
-                if (duration == tetris.interval && !tetris.paused && !tetris.over) {
+                if (tetris.duration == tetris.interval && !tetris.paused && !tetris.over) {
                     tetris.select_piece()
                     tetris.dibujar(dibujo)
                     if (tetris.current_piece) tetris.fall()
-                    duration = 0
+                    tetris.duration = 0
                 }
                 requestAnimationFrame(move)
             }
