@@ -1,4 +1,4 @@
-// (()=> {
+(()=> {
     class Tetris {
         constructor(width, height, side, canvas) {
             this.width = width
@@ -13,9 +13,12 @@
             this.tablero = []
             this.current_piece
             this.activeCs = []
+            this.cuadrado = true
             this.interval = 50
             this.duration = 0
             this.score = 0
+            this.level = 1
+            this.filas = 0
         }
 
         init() {
@@ -28,11 +31,9 @@
         teclas() {
             document.addEventListener("keydown", (e) => {
                 // Pausa el juego
-                if (e.keyCode == 32) {
-                    this.paused = (this.paused == false)
-                    if (!this.paused) this.duration = 0
-                }
+                if (e.keyCode == 32) this.paused = (this.paused == false)
                 if (!this.over) title.innerText = this.paused ? "PAUSA" : "TETRIS"
+
                 // Mueve las piezas
                 if (!this.paused) {
                     if (e.keyCode == 39 || e.keyCode == 68) this.mover_der()
@@ -340,31 +341,45 @@
                     tetris.tablero[i+tetris.width].id = tetris.tablero[i].id
                     tetris.tablero[i].id = 0
                 }
+                tetris.filas++
                 tetris.score += 250
                 tetris.checkScore()
             }
         }
 
         checkScore() {
+            filas.innerText = this.filas
+            puntos.innerText = this.score
             switch (this.score) {
                 case 500:
                     this.interval = 45
+                    this.level = 2
                     break
                 case 1000:
                     this.interval = 40
+                    this.level = 3
                     break
                 case 1250:
                     this.interval = 35
+                    this.level = 4
                     break
                 case 2000:
                     this.interval = 30
+                    this.level = 5
+                    break
+                case 3000:
+                    this.interval = 25
+                    this.level = 6
+                
             }
+            nivel.innerText = this.level
         }
 
         lose() {
             title.innerText = "Perdiste!"
             this.over = true
             this.paused = true
+            btn_final.style.display = "initial"
         }
 
         dibujar(dibujo) {
@@ -377,9 +392,10 @@
                     dibujo.beginPath()
                     dibujo.fillStyle = colors[casilla.id-1]
                     dibujo.strokeStyle = "white"
-                    dibujo.fillRect(casilla.x * this.side, (casilla.y-1) * this.side, this.side, this.side)
-                    dibujo.rect(casilla.x * this.side, (casilla.y-1) * this.side, this.side, this.side)
-                    // dibujo.arc(casilla.x * this.side + this.side/2, (casilla.y-1) * this.side + this.side/2, this.side/2, 0, Math.PI*2)
+                    if (this.cuadrado) {
+                        dibujo.fillRect(casilla.x * this.side, (casilla.y-1) * this.side, this.side, this.side)
+                        dibujo.rect(casilla.x * this.side, (casilla.y-1) * this.side, this.side, this.side)
+                    } else dibujo.arc(casilla.x * this.side + this.side/2, (casilla.y-1) * this.side + this.side/2, this.side/2, 0, Math.PI*2)
                     dibujo.fill()
                     dibujo.stroke()
                     dibujo.closePath()
@@ -388,7 +404,37 @@
         }
     }
 
+    var game = document.getElementById("game")
+
     var canvas = document.getElementById("lienzo")
     var juego = new Tetris(10, 18, 30, canvas)
-    juego.init()
-// })()
+
+    var btn_iniciar = document.getElementById("btn_iniciar")
+    btn_iniciar.addEventListener("click", function() {
+        main_btn.remove()
+        game.style.display = "initial"
+        juego.init()
+    })
+
+    var backgrounds = [{r: 100, g: 181, b: 246}, {r: 25, g: 118, b: 210}, {r: 255, g: 109, b: 0},
+                        {r: 255, g: 234, b: 0}, {r: 244, g: 67, b: 54}, {r: 233, g: 30, b: 99}, {r: 4, g: 190, b: 36}]
+    var index = 0
+    var previous = backgrounds[index]
+
+    setInterval(function() {
+        var next = backgrounds[index]
+
+        if (previous.r == next.r && previous.g == next.g && previous.b == next.b) {
+            index = (index == backgrounds.length-1) ? 0 : index+1
+        } else {
+            if (previous.r < next.r) previous.r++
+            if (previous.g < next.g) previous.g++
+            if (previous.b < next.b) previous.b++
+            if (previous.r > next.r) previous.r--
+            if (previous.g > next.g) previous.g--
+            if (previous.b > next.b) previous.b--
+        }
+
+        document.body.style.backgroundColor = `rgb(${previous.r}, ${previous.g}, ${previous.b})`
+    }, 1000)
+})()

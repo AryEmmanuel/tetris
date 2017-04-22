@@ -1,12 +1,64 @@
 @import url('https://fonts.googleapis.com/css?family=Russo+One');
+@import url('https://fonts.googleapis.com/css?family=Audiowide');
 body {
-    background-color: rgb(35,35,35);
-    font-family: 'Russo One', sans-serif;
+    background-color: #1976D2;
+    font-family: 'Audiowide', sans-serif;
+    margin: 0;
 }
-h1 {
+h1, h2 {
     color: white;
+}
+p, .p {
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 20px;
+}
+.titulo {
+    padding: 0;
+    text-align: center;
+    font-size: 70px;
+    color: white;
+}
+.titulo span::after {
+    padding: 0;
+}
+.container {
+    padding: 1em;
+}
+.corregir {
+    margin: 0;
+}
+.button {
+    padding: 1em;
+    padding-left: 2em;
+    padding-right: 2em;
+    font-weight: lighter;
+    font-size: 20px;
+    font-family: 'Audiowide', sans-serif;
+    background-color: rgb(55,55,55);
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+.red-button {
+    padding: 1em;
+    padding-left: 2em;
+    padding-right: 2em;
+    font-weight: lighter;
+    font-size: 20px;
+    font-family: 'Audiowide', sans-serif;
+    background-color: #F44336;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+#btn_final {
+    display: none;
 }
 #lienzo {
 	background-color: rgb(55,55,55);
     border: 1px solid rgb(40,40,40);
+}
+#game {
+    display:  none;
 }

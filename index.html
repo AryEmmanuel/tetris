@@ -8,14 +8,32 @@
 </head>
 <body>
     <div class="container">
-        <div class="row">
-            <div class="col-xs-offset-2 col-xs-10">
-                <h1 style="text-align: center" id="title">TETRIS</h1>
+        <div class="" id="main_btn" style="padding: 1em;">
+            <div class="row corregir">
+                <div class="col-md-offset-5 col-md-4">
+                    <h1 class="titulo">TETRIS</h1>
+                </div>
+            </div>
+            <div class="row corregir">
+                <div class="col-md-offset-6 col-md-1" style=""><button class="button" id="btn_iniciar">Comenzar</button></div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-xs-offset-5 col-xs-7">
-                <canvas id="lienzo"></canvas>
+        <div id="game">
+            <div class="row corregir">
+                <div class="col-md-offset-2 col-md-10">
+                    <h1 style="text-align: center" id="title">TETRIS</h1>
+                </div>
+            </div>
+            <div class="row corregir">
+                <div class="col-md-offset-3 col-md-4">
+                    <canvas id="lienzo"></canvas>
+                </div>
+                <div class="col-md-4">
+                    <div class="row"><div class="col-md-12"><h2 id="puntos">0</h2></div></div>
+                    <div class="row"><div class="col-md-12"><h2>Filas: <span id="filas">0</span></h2></div></div>
+                    <div class="row"><div class="col-md-12"><h2>Nivel: <span id="nivel">1</span></h2></div></div>
+                    <div class="row" id="btn_final"><div class="col-md-10"><div class="red-button" onclick="location.reload();">Jugar de nuevo</div></div></div>
+                </div>
             </div>
         </div>
         <script src="pieces.js" charset="utf-8"></script>
