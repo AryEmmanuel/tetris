@@ -416,6 +416,9 @@
         juego.init()
     })
 
+    btn_c.addEventListener("click", ()=> juego.cuadrado = true)
+    btn_r.addEventListener("click", ()=> juego.cuadrado = false)
+
     var backgrounds = [{r: 100, g: 181, b: 246}, {r: 25, g: 118, b: 210}, {r: 255, g: 109, b: 0},
                         {r: 255, g: 234, b: 0}, {r: 244, g: 67, b: 54}, {r: 233, g: 30, b: 99}, {r: 4, g: 190, b: 36}]
     var index = 0
