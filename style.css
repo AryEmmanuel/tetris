@@ -52,6 +52,9 @@ p, .p {
     color: white;
     cursor: pointer;
 }
+.stats {
+    font-family: 'Russo One', sans-serif;
+}
 #btn_final {
     display: none;
 }
