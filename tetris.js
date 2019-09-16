@@ -18,7 +18,7 @@
             this.next_piece
             this.activeCs = []
             this.cuadrado = true
-            this.interval = 47
+            this.interval = 40
             this.duration = 0
             this.score = 0
             this.level = 1
@@ -36,7 +36,7 @@
             document.addEventListener("keydown", (e) => {
                 // Pausa el juego
                 if (e.keyCode == 32) this.paused = (this.paused == false)
-                if (!this.over) title.innerText = this.paused ? "PAUSA" : "TETRIS"
+                if (!this.over) title.innerText = this.paused ? "PAUSED" : "TETRIS"
 
                 // Mueve las piezas
                 if (!this.paused) {
@@ -80,29 +80,10 @@
             }
         }
 
-        grid() {
-            let dibujo = this.dibujo
-            for (var i = 0; i <= this.canvas.height; i += this.side) {
-                dibujo.beginPath()
-                dibujo.moveTo(0, i)
-                dibujo.lineTo(this.canvas.width, i)
-                dibujo.stroke()
-                dibujo.closePath()
-                //console.log(i)
-            }
-            for (var i = 0; i <= this.canvas.width; i += this.side) {
-                dibujo.beginPath()
-                dibujo.moveTo(i, 0)
-                dibujo.lineTo(i, this.canvas.height)
-                dibujo.stroke()
-                dibujo.closePath()
-            }
-        }
-
         // Mueve el juego (si no esta pausado)
         mover(dibujo, dibujo2) {
             var tetris = this
-            
+
             function move(timestamp) {
                 if (!tetris.paused) tetris.duration++
 
@@ -192,13 +173,13 @@
             }
             return piezas_activas
         }
-        
+
         mover_der() {
             var n = 0
             for (let c = 0; c < this.tablero.length; c++) {
                 if ((this.tablero[c].active && this.tablero[c].x === this.width-1) || (this.tablero[c].active && this.tablero[c+1].id && !this.tablero[c+1].active)) n++
             }
-            
+
             if (!n)
             {
                 var piezas_activas = this.obtPiezasActivas()
@@ -208,7 +189,7 @@
                         if (this.tablero[k].x == piezas_activas[j].x && this.tablero[k].y == piezas_activas[j].y) {
                             this.tablero[k+1].id = piezas_activas[j].id
                             this.tablero[k+1].active = true
-                        } 
+                        }
                     }
                 }
             }
@@ -229,7 +210,7 @@
                         if (this.tablero[k].x == piezas_activas[j].x && this.tablero[k].y == piezas_activas[j].y) {
                             this.tablero[k-1].id = piezas_activas[j].id
                             this.tablero[k-1].active = true
-                        } 
+                        }
                     }
                 }
             }
@@ -243,7 +224,7 @@
             var max_y
             var min_y
             var min_x
-            
+
             for (var i = 0; i < this.width; i++) {
                 var n = 0
                 var p = []
@@ -289,7 +270,7 @@
                                  if (arreglo[k][index+1]) continue
                                  else arreglo[k].push(0)
                             }
-                        } 
+                        }
                     }
                 }
             }
@@ -345,7 +326,7 @@
                         if (this.tablero[k].x == piezas_activas[j].x && this.tablero[k].y == piezas_activas[j].y) {
                             this.tablero[k+this.width].id = piezas_activas[j].id
                             this.tablero[k+this.width].active = true
-                        } 
+                        }
                     }
                 }
             }
@@ -393,30 +374,26 @@
             filas.innerText = this.filas
             puntos.innerText = this.score
             switch (this.score) {
-                case 500:
-                    this.interval = 45
+                case 1000:
+                    this.interval = 35
                     this.level = 2
                     break
-                case 1000:
-                    this.interval = 40
+                case 1250:
+                    this.interval = 30
                     this.level = 3
                     break
-                case 1250:
-                    this.interval = 35
+                case 2000:
+                    this.interval = 25
                     this.level = 4
                     break
-                case 2000:
-                    this.interval = 30
+                case 3000:
+                    this.interval = 20
                     this.level = 5
                     break
-                case 3000:
-                    this.interval = 25
-                    this.level = 6
-                    break
                 case 4500:
-                    this.interval = 20
-                    this.level = 7
-                
+                    this.interval = 15
+                    this.level = 6
+
             }
             nivel.innerText = this.level
         }
@@ -472,15 +449,37 @@
     var canvas2 = document.getElementById("lienzo_2")
     var juego = new Tetris(10, 18, 30, canvas, canvas2)
 
+    var mobile = {
+        Android: function() {
+            return navigator.userAgent.match(/Android/i);
+        },
+        iOS: function() {
+            return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+        },
+        Opera: function() {
+            return navigator.userAgent.match(/Opera Mini/i);
+        },
+        any: function() {
+            return (mobile.Android() || mobile.iOS() || mobile.Opera());
+        }
+    }
+
     var btn_iniciar = document.getElementById("btn_iniciar")
     btn_iniciar.addEventListener("click", function() {
         main_btn.remove()
         game.style.display = "initial"
+        if (mobile.any()) mobile_controls.style.display = "initial"
         juego.init()
     })
 
-    btn_c.addEventListener("click", ()=> juego.cuadrado = true)
-    btn_r.addEventListener("click", ()=> juego.cuadrado = false)
+
+    btn_rtte.addEventListener("click", ()=> juego.rotate())
+    btn_mvelft.addEventListener("click", ()=> juego.mover_izq())
+    btn_mvert.addEventListener("click", ()=> juego.mover_der())
+    btn_pse.addEventListener("click", ()=> {
+        juego.paused = (juego.paused == false)
+        title.innerText = juego.paused ? "PAUSED" : "TETRIS"
+    })
 
     var backgrounds = [{r: 100, g: 181, b: 246}, {r: 25, g: 118, b: 210}, {r: 255, g: 109, b: 0},
                         {r: 255, g: 234, b: 0}, {r: 244, g: 67, b: 54}, {r: 233, g: 30, b: 99}, {r: 4, g: 190, b: 36}]

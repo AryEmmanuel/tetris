@@ -35,7 +35,7 @@ p, .p {
     padding-right: 2em;
     font-weight: lighter;
     font-size: 20px;
-    font-family: 'Audiowide', sans-serif;
+    font-family: 'Press Start 2P', cursive;
     background-color: rgb(55,55,55);
     border: none;
     color: white;
@@ -47,14 +47,17 @@ p, .p {
     padding-right: 2em;
     font-weight: lighter;
     font-size: 20px;
-    font-family: 'Audiowide', sans-serif;
+    font-family: 'Press Start 2P', cursive;
     background-color: #F44336;
     border: none;
     color: white;
     cursor: pointer;
 }
 .stats {
-    font-family: 'Russo One', sans-serif;
+    font-family: 'Press Start 2P', cursive;
+}
+#mobile_controls .button {
+    background-color: rgb(0, 35, 189);
 }
 #btn_final {
     display: none;
@@ -63,6 +66,9 @@ p, .p {
 	background-color: rgb(55,55,55);
     border: 1px solid rgb(40,40,40);
 }
-#game {
+#mobile_controls {
+    margin-top: 1em;
+}
+#game, #mobile_controls {
     display:  none;
 }
