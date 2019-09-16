@@ -1,8 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Russo+One');
 @import url('https://fonts.googleapis.com/css?family=Audiowide');
+@import url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap');
 body {
     background-color: #1976D2;
-    font-family: 'Audiowide', sans-serif;
+    font-family: 'Press Start 2P', cursive;
     margin: 0;
 }
 h1, h2 {
@@ -23,7 +24,7 @@ p, .p {
     padding: 0;
 }
 .container {
-    padding: 1em;
+    /* padding: 1em; */
 }
 .corregir {
     margin: 0;
