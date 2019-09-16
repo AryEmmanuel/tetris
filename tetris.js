@@ -102,7 +102,7 @@
         // Mueve el juego (si no esta pausado)
         mover(dibujo, dibujo2) {
             var tetris = this
-            
+
             function move(timestamp) {
                 if (!tetris.paused) tetris.duration++
 
@@ -192,13 +192,13 @@
             }
             return piezas_activas
         }
-        
+
         mover_der() {
             var n = 0
             for (let c = 0; c < this.tablero.length; c++) {
                 if ((this.tablero[c].active && this.tablero[c].x === this.width-1) || (this.tablero[c].active && this.tablero[c+1].id && !this.tablero[c+1].active)) n++
             }
-            
+
             if (!n)
             {
                 var piezas_activas = this.obtPiezasActivas()
@@ -208,7 +208,7 @@
                         if (this.tablero[k].x == piezas_activas[j].x && this.tablero[k].y == piezas_activas[j].y) {
                             this.tablero[k+1].id = piezas_activas[j].id
                             this.tablero[k+1].active = true
-                        } 
+                        }
                     }
                 }
             }
@@ -229,7 +229,7 @@
                         if (this.tablero[k].x == piezas_activas[j].x && this.tablero[k].y == piezas_activas[j].y) {
                             this.tablero[k-1].id = piezas_activas[j].id
                             this.tablero[k-1].active = true
-                        } 
+                        }
                     }
                 }
             }
@@ -243,7 +243,7 @@
             var max_y
             var min_y
             var min_x
-            
+
             for (var i = 0; i < this.width; i++) {
                 var n = 0
                 var p = []
@@ -289,7 +289,7 @@
                                  if (arreglo[k][index+1]) continue
                                  else arreglo[k].push(0)
                             }
-                        } 
+                        }
                     }
                 }
             }
@@ -345,7 +345,7 @@
                         if (this.tablero[k].x == piezas_activas[j].x && this.tablero[k].y == piezas_activas[j].y) {
                             this.tablero[k+this.width].id = piezas_activas[j].id
                             this.tablero[k+this.width].active = true
-                        } 
+                        }
                     }
                 }
             }
@@ -416,7 +416,7 @@
                 case 4500:
                     this.interval = 20
                     this.level = 7
-                
+
             }
             nivel.innerText = this.level
         }
@@ -471,6 +471,23 @@
     var canvas = document.getElementById("lienzo")
     var canvas2 = document.getElementById("lienzo_2")
     var juego = new Tetris(10, 18, 30, canvas, canvas2)
+
+    var mobile = {
+        Android: function() {
+            return navigator.userAgent.match(/Android/i);
+        },
+        iOS: function() {
+            return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+        },
+        Opera: function() {
+            return navigator.userAgent.match(/Opera Mini/i);
+        },
+        any: function() {
+            return (mobile.Android() || mobile.iOS() || mobile.Opera());
+        }
+    };
+
+    console.log(mobile.any())
 
     var btn_iniciar = document.getElementById("btn_iniciar")
     btn_iniciar.addEventListener("click", function() {
