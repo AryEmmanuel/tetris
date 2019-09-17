@@ -4,61 +4,95 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css" media="screen" title="no title" charset="utf-8">
     <link rel="stylesheet" href="flexboxgrid.min.css" media="screen" title="no title" charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.35, maximum-scale=0.35, user-scalable=no" />
     <title>Tetris</title>
 </head>
-<body>
+<body id="body">
     <div class="corregir">
-        <div class="" id="main_btn" style="padding: 1em;">
-            <div class="row center-xs corregir">
+        <div class="" id="main_btn" style="padding: 8em;">
+            <div class="row center-xs middle-xs corregir">
                 <div class="col-lg-12 col-xs-12">
                     <h1 class="titulo">TETRIS</h1>
                 </div>
             </div>
             <div class="row center-xs corregir">
-                <div class="col-md-2"><button class="button" id="btn_iniciar">Start</button></div>
+                <div class="col-xs-2"><button class="button" id="btn_iniciar">Start</button></div>
             </div>
         </div>
         <div id="game" class="container corregir">
-            <div class="row corregir middle-xs center-xs" style="width:100%">
+            <div class="row corregir middle-xs center-xs" style="width:100%; padding:1em;">
                 <div class="col-xs-10">
                     <h1 style="text-align: center" id="title">TETRIS</h1>
                 </div>
             </div>
-            <div class="row corregir" style="width:100%">
-                <div class="col-xs-offset-3 col-xs-4">
+            <div class="row corregir middle-xs center-xs" style="width:100%">
+                <div class="col-xs-4">
                     <canvas id="lienzo"></canvas>
                 </div>
-                <div class="col-xs-4 stats">
-                    <canvas id="lienzo_2"></canvas>
-                    <div class="row"><div class="col-xs-12"><h2 id="puntos">0</h2></div></div>
-                    <div class="row"><div class="col-xs-12"><h2>Rows: <span id="filas">0</span></h2></div></div>
-                    <div class="row"><div class="col-xs-12"><h2>Level <span id="nivel">1</span></h2></div></div>
-                    <div class="row" id="btn_final"><div class="col-xs-10"><div class="red-button" onclick="location.reload();">Play again</div></div></div>
+                <div class="col-xs-offset-2 col-xs-4 stats">
+                    <div class="row center-xs middle-xs" id="how_to">
+                        <div class="col-xs-1">
+                            <h1 id="close_icon">></h1>
+                        </div>
+                        <div class="col-xs-offset-1 col-xs-7">
+                            <h3 id="htext">How to play</h3>
+                        </div>
+                    </div>
+                    <div id="how_to_desc">
+                        <div class="row center-xs">
+                            <div class="col-xs-10">
+                                <h4><span class="key">A</span> or <span class="key"><</span> to move left</h4>
+                            </div>
+                        </div>
+                        <div class="row center-xs">
+                            <div class="col-xs-10">
+                                <h4><span class="key">D</span> or <span class="key">></span> to move right</h4>
+                            </div>
+                        </div>
+                        <div class="row center-xs">
+                            <div class="col-xs-10">
+                                <h4><span class="key">W</span> or <span class="key">^</span> to rotate</h4>
+                            </div>
+                        </div>
+                        <div class="row center-xs">
+                            <div class="col-xs-10">
+                                <h4><span class="key">ENTER</span> to pause</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="info">
+                        <canvas id="lienzo_2"></canvas>
+                        <div class="row"><div class="col-xs-12"><h2 id="puntos">0</h2></div></div>
+                        <div class="row"><div class="col-xs-12"><h2>Rows: <span id="filas">0</span></h2></div></div>
+                        <div class="row"><div class="col-xs-12"><h2>Level <span id="nivel">1</span></h2></div></div>
+                        <div class="row" id="btn_final"><div class="col-xs-12"><div class="red-button" onclick="location.reload();">Play again</div></div></div>
+                    </div>
                 </div>
             </div>
         </div>
         <div id="mobile_controls" class="corregir">
-            <div class="row corregir middle-xs center-xs" style="margin-top:4em;">
+            <div class="row corregir middle-xs center-xs" style="margin-top:4em; width:100%">
                 <div class="col-xs-3">
-                    <div class="button" id="btn_rtte">Rotate</div>
+                    <div class="button" id="btn_rtte"><h1>@</h1></div>
                 </div>
             </div>
-            <div class="row corregir middle-xs center-xs" style="margin-top:2em;">
+            <div class="row corregir middle-xs center-xs" style="margin-top:2em; width:100%">
                 <div class="col-xs-3">
-                    <div class="button" id="btn_mvelft">Left</div>
+                    <div class="button" id="btn_mvelft"><h1><</h1></div>
                 </div>
                 <div class="col-xs-offset-2 col-xs-3">
-                    <div class="button" id="btn_mvert">Right</div>
+                    <div class="button" id="btn_mvert"><h1>></h1></div>
                 </div>
             </div>
-            <div class="row corregir middle-xs center-xs" style="margin-top:2em;">
+            <div class="row corregir middle-xs center-xs" style="margin-top:2em; width:100%">
                 <div class="col-xs-3">
-                    <div class="button" id="btn_pse">Pause</div>
+                    <div class="button"><h1 id="btn_pse">||</h1></div>
                 </div>
             </div>
         </div>
         <script src="pieces.js" charset="utf-8"></script>
         <script src="tetris.js" charset="utf-8"></script>
+        <script src="background.js" charset="utf-8"></script>
     </div>
 </body>
 </html>

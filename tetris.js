@@ -17,7 +17,6 @@
             this.current_piece
             this.next_piece
             this.activeCs = []
-            this.cuadrado = true
             this.interval = 40
             this.duration = 0
             this.score = 0
@@ -35,8 +34,8 @@
         teclas() {
             document.addEventListener("keydown", (e) => {
                 // Pausa el juego
-                if (e.keyCode == 32) this.paused = (this.paused == false)
-                if (!this.over) title.innerText = this.paused ? "PAUSED" : "TETRIS"
+                if (e.keyCode == 13) this.paused = (this.paused == false)
+                if (!this.over) title.innerText = this.paused ? "PAUSE" : "TETRIS"
 
                 // Mueve las piezas
                 if (!this.paused) {
@@ -48,7 +47,7 @@
         }
 
         crearTablero(width, height, side) {
-            this.canvas2.width = width * side
+            this.canvas2.width = width * side - 100
             this.canvas2.height = side * 4
 
             this.canvas.width = width * side
@@ -156,7 +155,7 @@
             for (let i = 0; i < pieza.pos[0].length; i++) {
                 for (let j = 0; j < m-1; j++) {
                     if (this.tablero2[j].x == pieza.pos[0][i].x && this.tablero2[j].y == pieza.pos[0][i].y) {
-                        this.tablero2[j].id = pieza.pos[0][i].id
+                        this.tablero2[j-1].id = pieza.pos[0][i].id
                     }
                 }
             }
@@ -399,7 +398,7 @@
         }
 
         lose() {
-            title.innerText = "Perdiste!"
+            title.innerText = "Game over"
             this.over = true
             this.paused = true
             btn_final.style.display = "initial"
@@ -416,10 +415,8 @@
                     dibujo.beginPath()
                     dibujo.fillStyle = colors[casilla.id-1]
                     dibujo.strokeStyle = "white"
-                    if (this.cuadrado) {
-                        dibujo.fillRect(casilla.x * this.side, (casilla.y-1) * this.side, this.side, this.side)
-                        dibujo.rect(casilla.x * this.side, (casilla.y-1) * this.side, this.side, this.side)
-                    } else dibujo.arc(casilla.x * this.side + this.side/2, (casilla.y-1) * this.side + this.side/2, this.side/2, 0, Math.PI*2)
+                    dibujo.fillRect(casilla.x * this.side, (casilla.y-1) * this.side, this.side, this.side)
+                    dibujo.rect(casilla.x * this.side, (casilla.y-1) * this.side, this.side, this.side)
                     dibujo.fill()
                     dibujo.stroke()
                     dibujo.closePath()
@@ -431,10 +428,8 @@
                     dibujo2.beginPath()
                     dibujo2.fillStyle = colors[casilla.id-1]
                     dibujo2.strokeStyle = "white"
-                    if (this.cuadrado) {
-                        dibujo2.fillRect(casilla.x * this.side, (casilla.y+1) * this.side, this.side, this.side)
-                        dibujo2.rect(casilla.x * this.side, (casilla.y+1) * this.side, this.side, this.side)
-                    } else dibujo2.arc(casilla.x * this.side + this.side/2, (casilla.y+1) * this.side + this.side/2, this.side/2, 0, Math.PI*2)
+                    dibujo2.fillRect(casilla.x * this.side, (casilla.y+1) * this.side, this.side, this.side)
+                    dibujo2.rect(casilla.x * this.side, (casilla.y+1) * this.side, this.side, this.side)
                     dibujo2.fill()
                     dibujo2.stroke()
                     dibujo2.closePath()
@@ -442,12 +437,6 @@
             }
         }
     }
-
-    var game = document.getElementById("game")
-
-    var canvas = document.getElementById("lienzo")
-    var canvas2 = document.getElementById("lienzo_2")
-    var juego = new Tetris(10, 18, 30, canvas, canvas2)
 
     var mobile = {
         Android: function() {
@@ -464,6 +453,11 @@
         }
     }
 
+    var game = document.getElementById("game")
+    var canvas = document.getElementById("lienzo")
+    var canvas2 = document.getElementById("lienzo_2")
+    var juego = new Tetris(10, 18, mobile.any() ? 50 : 30, canvas, canvas2)
+
     var btn_iniciar = document.getElementById("btn_iniciar")
     btn_iniciar.addEventListener("click", function() {
         main_btn.remove()
@@ -472,34 +466,29 @@
         juego.init()
     })
 
-
     btn_rtte.addEventListener("click", ()=> juego.rotate())
     btn_mvelft.addEventListener("click", ()=> juego.mover_izq())
     btn_mvert.addEventListener("click", ()=> juego.mover_der())
     btn_pse.addEventListener("click", ()=> {
         juego.paused = (juego.paused == false)
-        title.innerText = juego.paused ? "PAUSED" : "TETRIS"
+        title.innerText = juego.paused ? "PAUSE" : "TETRIS"
+        btn_pse.innerText = juego.paused ? "|>" : "||"
     })
 
-    var backgrounds = [{r: 100, g: 181, b: 246}, {r: 25, g: 118, b: 210}, {r: 255, g: 109, b: 0},
-                        {r: 255, g: 234, b: 0}, {r: 244, g: 67, b: 54}, {r: 233, g: 30, b: 99}, {r: 4, g: 190, b: 36}]
-    var index = 0
-    var previous = backgrounds[index]
-
-    setInterval(function() {
-        var next = backgrounds[index]
-
-        if (previous.r == next.r && previous.g == next.g && previous.b == next.b) {
-            index = (index == backgrounds.length-1) ? 0 : index+1
+    var open = false
+    how_to.addEventListener("click", function() {
+        open = open ? false : true
+        if (open) {
+            close_icon.innerText = "<"
+            htext.innerText = "Go back"
+            how_to_desc.style.display = "initial"
+            info.style.display = "none"
         } else {
-            if (previous.r < next.r) previous.r++
-            if (previous.g < next.g) previous.g++
-            if (previous.b < next.b) previous.b++
-            if (previous.r > next.r) previous.r--
-            if (previous.g > next.g) previous.g--
-            if (previous.b > next.b) previous.b--
+            close_icon.innerText = ">"
+            htext.innerText = "How to play"
+            how_to_desc.style.display = "none"
+            info.style.display = "initial"
         }
-
-        document.body.style.backgroundColor = `rgb(${previous.r}, ${previous.g}, ${previous.b})`
-    }, 1000)
+    })
+    if (mobile.any()) how_to.style.display = "none"
 })()
