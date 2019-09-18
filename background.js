@@ -4,4 +4,4 @@ var backgrounds = ["linear-gradient(to right, #00c6ff, #0072ff)", "linear-gradie
                 "radial-gradient( circle farthest-corner at 10% 20%,  rgba(102,116,236,1) 0%, rgba(50,231,219,1) 90% )", "linear-gradient( 111.5deg, rgba(20,100,196,1) 0.4%, rgba(33,152,214,1) 100.2% )", "radial-gradient( circle farthest-corner at 1.3% 2.8%,  rgba(239,249,249,1) 0%, rgba(182,199,226,1) 100.2% )",
                 "linear-gradient( 178.1deg,  rgba(246,199,34,1) 13%, rgba(245,149,33,1) 86.3% )"]
 
-body.style.backgroundImage = backgrounds[Math.floor(Math.random() * (backgrounds.length))]
+hty.style.backgroundImage = backgrounds[Math.floor(Math.random() * (backgrounds.length))]
